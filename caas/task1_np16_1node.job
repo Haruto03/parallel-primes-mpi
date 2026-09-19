@@ -1,0 +1,32 @@
+#!/bin/bash
+# FIT3143 Lab #2 - CAAS SLURM job: task1, 16 MPI processes filling one 16-core node.
+#
+# Layout expected on CAAS (same as the git checkout):
+#   ~/Fit3143/Lab2/caas/task1_np16_1node.job   <- submit from this directory
+#   ~/Fit3143/Lab2/task1.c, task2.c, Makefile, bench/run_bench.sh
+#   ~/Fit3143/fit3143-lab1/task1.c, task2.c, task3.c   (Week 4 programs)
+#
+#   sbatch task1_np16_1node.job
+#   squeue -u $USER          # wait for it to finish (10 min limit, 1 job at a time)
+#   cat task1_np16_1node.*.out
+# Results are appended to ../bench/results/caas-1node.csv (unified schema), so
+# they plot with the same plot.py as the local runs:
+#   python bench/plot.py bench/results/caas-1node.csv --site caas-1node
+#
+#SBATCH --job-name=task1_np16_1node
+#SBATCH --time=00:10:00
+#SBATCH --mem=16G
+#SBATCH --ntasks=16
+#SBATCH --cpus-per-task=1
+#SBATCH --ntasks-per-node=16
+#SBATCH --output=task1_np16_1node.%j.out
+#SBATCH --partition=defq
+
+module load openmpi/4.1.5-gcc-11.2.0-ux65npg
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+cd "$SLURM_SUBMIT_DIR"
+
+# Every run inside the allocation is launched with srun (not mpirun), so the
+# process count / placement comes from the #SBATCH lines above.
+SITE=caas-1node CORES=16 REPEATS=3 LAUNCHER=srun OUT_DIR=/tmp/lab2_$USER \
+    bash ../bench/run_bench.sh caas-mpi

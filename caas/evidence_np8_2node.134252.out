@@ -1,0 +1,120 @@
+=== job 134252 on nodes: student-caas-n[01,14]  (8 tasks, 2 cpus/task) ===
+Thu Sep 17 03:02:18 AEST 2026
+whoami: cannot find name for user ID 875417
+student-caas-n01
+
+Currently Loaded Modules:
+  1) shared
+  2) DefaultModules
+  3) gcc/11.2.0
+  4) slurm/21.08.8-gcc-11.2.0-3ykg6zx
+  5) libiconv/1.17-gcc-11.2.0-zee3orq
+  6) xz/5.4.1-gcc-11.2.0-3huxeuz
+  7) zlib-ng/2.1.3-gcc-11.2.0-myrntce
+  8) libxml2/2.10.3-gcc-11.2.0-hxhpgns
+  9) cuda/12.0.1-gcc-11.2.0-q6qmg7g
+ 10) bzip2/1.0.8-gcc-11.2.0-w4ziagj
+ 11) ncurses/6.4-gcc-11.2.0-jsxwinf
+ 12) pigz/2.7-gcc-11.2.0-gskywck
+ 13) zstd/1.5.5-gcc-11.2.0-xhtopb6
+ 14) tar/1.34-gcc-11.2.0-7zfsd7b
+ 15) gettext/0.21.1-gcc-11.2.0-adbzmbb
+ 16) pkgconf/1.9.5-gcc-11.2.0-mejuzrd
+ 17) elfutils/0.189-gcc-11.2.0-fqzgzf2
+ 18) libffi/3.4.4-gcc-11.2.0-zn4lc4g
+ 19) pcre/8.45-gcc-11.2.0-pikwf6n
+ 20) berkeley-db/18.1.40-gcc-11.2.0-4ie72xq
+ 21) readline/8.2-gcc-11.2.0-pg3d2ur
+ 22) gdbm/1.23-gcc-11.2.0-vb2cy7z
+ 23) perl/5.38.0-gcc-11.2.0-h3r5gez
+ 24) libmd/1.0.4-gcc-11.2.0-p3dmvpv
+ 25) libbsd/0.11.7-gcc-11.2.0-5yhtbh2
+ 26) expat/2.5.0-gcc-11.2.0-xltxrjj
+ 27) libxcrypt/4.4.35-gcc-11.2.0-nphrade
+ 28) openssl/3.1.2-gcc-11.2.0-hihv54z
+ 29) sqlite/3.42.0-gcc-11.2.0-75jz2zl
+ 30) util-linux-uuid/2.38.1-gcc-11.2.0-oktzstx
+ 31) python/3.10.12-gcc-11.2.0-q7kbxyf
+ 32) glib/2.72.2-gcc-11.2.0-pfe5q4r
+ 33) libpng/1.6.39-gcc-11.2.0-tpdvov2
+ 34) pixman/0.42.2-gcc-11.2.0-pgarcg6
+ 35) cairo/1.16.0-gcc-11.2.0-w6entxe
+ 36) libpciaccess/0.17-gcc-11.2.0-lhyoksm
+ 37) hwloc/2.9.1-gcc-11.2.0-ajp4xld
+ 38) numactl/2.0.14-gcc-11.2.0-53dqo72
+ 39) krb5/1.20.1-gcc-11.2.0-kke3u7g
+ 40) libedit/3.1-20210216-gcc-11.2.0-sj4nwyr
+ 41) openssh/9.3p1-gcc-11.2.0-qrwvqh2
+ 42) libevent/2.1.12-gcc-11.2.0-3l2lsig
+ 43) pmix/4.2.4-gcc-11.2.0-km22yjy
+ 44) openmpi/4.1.5-gcc-11.2.0-ux65npg
+
+ 
+
+
+=== build ===
+make: Nothing to be done for 'all'.
+
+=== ranks and their hosts ===
+      4 student-caas-n01
+      4 student-caas-n14
+
+=== task1: 8 MPI processes (4 + 4 on two nodes), n = 10000000 ===
+Found 664579 prime numbers. Output written to '$HOME/Fit3143/Lab2/primes_caas_task1_n10000000.txt'.
+Execution Time (Open MPI, 8 processes, dist=blockcyclic, chunk=1024, kernel=trial): 0.328535 seconds
+  broadcast : 0.000017 s
+  compute   : max 0.267724 s  min 0.251075 s  avg 0.253684 s  (imbalance 6.2%, reallocs 0)
+  gather    : 0.028617 s (includes waiting for the slowest rank)
+  merge     : 0.003977 s
+  write     : 0.044849 s
+RANK,0,0.251075,82992
+RANK,1,0.251319,82829
+RANK,2,0.267724,83245
+RANK,3,0.251632,83065
+RANK,4,0.251671,83091
+RANK,5,0.252047,83183
+RANK,6,0.252095,83121
+RANK,7,0.251913,83053
+CSV,mpi,10000000,8,1,blockcyclic,1024,-,0,0.328535,0.000017,0.267724,0.251075,0.253684,0.028617,0.003977,0.044849,664579
+
+=== task2: 4 MPI processes x 2 OpenMP threads (2 + 2 on two nodes), n = 10000000 ===
+Found 664579 prime numbers. Output written to '$HOME/Fit3143/Lab2/primes_caas_task2_n10000000.txt'.
+Execution Time (Hybrid, 4 processes x 2 threads, dist=blockcyclic, chunk=1024, omp=dynamic/64, kernel=trial): 0.408692 seconds
+  broadcast : 0.000040 s
+  compute   : max 0.350183 s  min 0.261023 s  avg 0.283460 s  (rank imbalance 25.5%, worst thread imbalance 7.2%, reallocs 0)
+  gather    : 0.008011 s (includes waiting for the slowest rank)
+  merge     : 0.003989 s
+  write     : 0.046469 s
+RANK,0,0.350183,0.348767,0.329972,166083
+RANK,1,0.261023,0.259729,0.243549,166012
+RANK,2,0.261180,0.259962,0.242274,166366
+RANK,3,0.261456,0.260239,0.241378,166118
+CSV,hybrid,10000000,4,2,blockcyclic,1024,dynamic,64,0.408692,0.000040,0.350183,0.261023,0.283460,0.008011,0.003989,0.046469,664579
+
+=== output files ===
+-rw-r--r-- 1 875417 1121 5227165 Sep 17 03:02 $HOME/Fit3143/Lab2/primes_caas_task1_n10000000.txt
+-rw-r--r-- 1 875417 1121 5227165 Sep 17 03:02 $HOME/Fit3143/Lab2/primes_caas_task2_n10000000.txt
+--- task1: first 5 and last 3 lines, line count ---
+Prime numbers less than 10000000 (664579 found):
+2
+3
+5
+7
+9999971
+9999973
+9999991
+664580 $HOME/Fit3143/Lab2/primes_caas_task1_n10000000.txt
+--- task1 vs task2 output identical? ---
+IDENTICAL
+--- sorted? (sort -c prints nothing when the list is in ascending order) ---
+SORTED
+
+=== job accounting ===
+JobID           JobName  Partition   NNodes   NTasks    Elapsed      State 
+------------ ---------- ---------- -------- -------- ---------- ---------- 
+134252       evidence_+       defq        2            00:00:03    RUNNING 
+134252.batch      batch                   1        1   00:00:03    RUNNING 
+134252.0       hostname                   2        8   00:00:00  COMPLETED 
+134252.1          task1                   2        8   00:00:01  COMPLETED 
+134252.2          task2                   2        4   00:00:01  COMPLETED 
+Thu Sep 17 03:02:20 AEST 2026

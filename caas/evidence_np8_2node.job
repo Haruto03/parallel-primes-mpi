@@ -1,0 +1,55 @@
+#!/bin/bash
+# FIT3143 Lab #2 - CAAS evidence job (teaching-team request, Week 8 announcement)
+#
+# Runs task1 and task2 once each with 8 MPI ranks over TWO nodes and keeps the
+# sorted prime list in $HOME (the benchmark jobs write to node-local /tmp,
+# which is not visible from the head node).  Everything printed here lands in
+# evidence_np8_2node.<jobid>.out, which is submitted together with the job
+# file, the prime files and screenshots.
+#
+#   cd ~/Fit3143/Lab2/caas && sbatch evidence_np8_2node.job
+#
+#SBATCH --job-name=evidence_np8_2node
+#SBATCH --time=00:05:00
+#SBATCH --mem=8G
+#SBATCH --ntasks=8
+#SBATCH --cpus-per-task=2
+#SBATCH --ntasks-per-node=4
+#SBATCH --output=evidence_np8_2node.%j.out
+#SBATCH --partition=defq
+
+module load openmpi/4.1.5-gcc-11.2.0-ux65npg
+cd "$SLURM_SUBMIT_DIR/.."
+
+echo "=== job $SLURM_JOB_ID on nodes: $SLURM_JOB_NODELIST  ($SLURM_NTASKS tasks, $SLURM_CPUS_PER_TASK cpus/task) ==="
+date; whoami; hostname
+module list 2>&1
+echo
+echo "=== build ==="
+make
+echo
+echo "=== ranks and their hosts ==="
+srun -n 8 --cpus-per-task=1 hostname | sort | uniq -c
+echo
+N=10000000
+OUT1=$HOME/Fit3143/Lab2/primes_caas_task1_n${N}.txt
+OUT2=$HOME/Fit3143/Lab2/primes_caas_task2_n${N}.txt
+echo "=== task1: 8 MPI processes (4 + 4 on two nodes), n = $N ==="
+PRIMES_VERBOSE=1 srun -n 8 --cpus-per-task=1 ./task1 $N "$OUT1" blockcyclic 1024
+echo
+echo "=== task2: 4 MPI processes x 2 OpenMP threads (2 + 2 on two nodes), n = $N ==="
+export OMP_NUM_THREADS=2
+PRIMES_VERBOSE=1 srun -n 4 --cpus-per-task=2 ./task2 $N "$OUT2" 2 blockcyclic 1024 dynamic 64
+echo
+echo "=== output files ==="
+ls -l "$OUT1" "$OUT2"
+echo "--- task1: first 5 and last 3 lines, line count ---"
+head -n 5 "$OUT1"; tail -n 3 "$OUT1"; wc -l "$OUT1"
+echo "--- task1 vs task2 output identical? ---"
+cmp "$OUT1" "$OUT2" && echo "IDENTICAL"
+echo "--- sorted? (sort -c prints nothing when the list is in ascending order) ---"
+tail -n +2 "$OUT1" | sort -n -c && echo "SORTED"
+echo
+echo "=== job accounting ==="
+sacct -j "$SLURM_JOB_ID" --format=JobID,JobName,Partition,NNodes,NTasks,Elapsed,State 2>/dev/null
+date
