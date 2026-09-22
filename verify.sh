@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Correctness check: every MPI / hybrid configuration must produce exactly the
-# same output file as the Week 4 serial program (../fit3143-lab1/task1.c).
+# same output file as the serial baseline (../parallel-primes-pthreads-openmp/task1.c).
 #
 #   ./verify.sh [n]        (default n = 1000000)
 set -euo pipefail
 cd "$(dirname "$0")"
 
 N=${1:-1000000}
-SERIAL_SRC=../fit3143-lab1/task1.c
+SERIAL_SRC=../parallel-primes-pthreads-openmp/task1.c
 WORK=${TMPDIR:-/tmp}/lab2_verify.$$
 # Open MPI refuses to run as root by default (e.g. inside Docker); slots are
 # counted per hardware thread so -np 8 works on a 4-core/8-thread laptop.

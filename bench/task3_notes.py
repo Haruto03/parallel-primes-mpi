@@ -98,7 +98,7 @@ def main():
         ("file write at root", "serial", ms(med(m1, "write"))),
     ))
     g = lambda f: img(os.path.join(a.graphs, f))
-    html = f"""<!doctype html><html><head><meta charset="utf-8"><title>FIT3143 Lab 2 - Task 3 notes</title>
+    html = f"""<!doctype html><html><head><meta charset="utf-8"><title>Performance evaluation notes</title>
 <style>
 @page {{ size: A4; margin: 9mm 11mm; }}
 body {{ font-family: Calibri, Arial, sans-serif; font-size: 8.9pt; color: #222; line-height: 1.25; margin: 0; }}
@@ -110,8 +110,8 @@ table {{ border-collapse: collapse; width: 100%; font-size: 8.4pt; }} td, th {{ 
 img {{ width: 100%; max-height: 58mm; object-fit: contain; }} .cap {{ font-size: 7.6pt; color: #555; }}
 ul {{ margin: 0.5mm 0 0 4mm; padding: 0; }} li {{ margin-bottom: 0.5mm; }}
 </style></head><body>
-<h1>FIT3143 Lab #2 &middot; Task 3 &mdash; Performance evaluation with Amdahl's / Gustafson's Law</h1>
-<div class="meta">Haruto Iriyama &middot; Hiew Jia Hao &middot;
+<h1>Performance evaluation with Amdahl's / Gustafson's Law</h1>
+<div class="meta">Haruto Iriyama &middot;
 Laptop: AMD Ryzen 5 7535HS, {a.physical} physical / {P} logical cores, Docker, GCC&nbsp;-O2, Open MPI 4.1 &middot; CAAS: AMD Epyc nodes, 16 cores &middot; every run = median of 3</div>
 
 <h2>1. How the serial and parallel parts were measured</h2>
@@ -122,10 +122,10 @@ Laptop: AMD Ryzen 5 7535HS, {a.physical} physical / {P} logical cores, Docker, G
 <div class="stat"><b>s = {100*s_m:.2f} %</b> &nbsp; serial fraction of Open MPI at P = 1 &nbsp;(hybrid 1&times;1: {100*s_h:.2f} %)</div>
 <div class="stat"><b>S<sub>Amdahl</sub>(P) = 1 / (s + (1 &minus; s)/P)</b> &nbsp;&rarr; {amd(s_m, P):.2f}&times; at P = {P}, ceiling 1/s = {1/s_m:.0f}&times;</div>
 <div class="stat"><b>S<sub>Gustafson</sub>(P) = s<sub>P</sub> + (1 &minus; s<sub>P</sub>)&middot;P</b> &nbsp;with s<sub>P</sub> measured <i>at</i> P = {P}: {100*sP:.2f} % &rarr; {gus:.2f}&times;</div>
-<p class="cap">Timing scope: the Week 4 programs are timed as whole processes (their own timer stops before the file write); task1/task2 from after MPI_Init to the end of the write, i.e. the rubric's overall time including communication, sorting and I/O. The mpirun launch + MPI_Init/Finalize is recorded separately: {launch:.2f} s at P = {P}, independent of P. The gather phase also contains the wait for the slowest rank; the mean wait (comp<sub>max</sub> &minus; comp<sub>avg</sub>) is subtracted before the serial fraction is formed.</p>
+<p class="cap">Timing scope: the baseline programs are timed as whole processes (their own timer stops before the file write); task1/task2 from after MPI_Init to the end of the write, i.e. the rubric's overall time including communication, sorting and I/O. The mpirun launch + MPI_Init/Finalize is recorded separately: {launch:.2f} s at P = {P}, independent of P. The gather phase also contains the wait for the slowest rank; the mean wait (comp<sub>max</sub> &minus; comp<sub>avg</sub>) is subtracted before the serial fraction is formed.</p>
 </div></div>
 
-<h2>2. Empirical against theoretical speed-up (all against the Week 4 serial program, {ser:.2f} s at n = {int(n):,})</h2>
+<h2>2. Empirical against theoretical speed-up (all against the serial baseline program, {ser:.2f} s at n = {int(n):,})</h2>
 <table><tr><th></th><th>empirical</th><th>Amdahl (s from P = 1)</th><th>Gustafson (s<sub>P</sub> at P)</th><th>linear</th></tr>
 <tr><td>Open MPI, {P} processes, laptop</td><td><b>{emp_m:.2f}&times;</b></td><td>{theo_m:.2f}&times;</td><td>{gus:.2f}&times;</td><td>{P}&times;</td></tr>
 <tr><td>hybrid {P//2} &times; 2, laptop</td><td><b>{emp_h:.2f}&times;</b></td><td>{theo_h:.2f}&times;</td><td>&mdash;</td><td>{P}&times;</td></tr>

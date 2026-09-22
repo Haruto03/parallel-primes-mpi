@@ -1,13 +1,13 @@
 /*
  * Serial segmented sieve of Eratosthenes - the fair baseline for the `sieve`
- * kernel of task1 / task2 (comparing a parallel sieve against the Week 4
+ * kernel of task1 / task2 (comparing a parallel sieve against the baseline
  * trial-division program would measure the algorithm, not the parallelism).
  *
  * Same algorithm, segment size and output format as the sieve kernel in
- * task1.c, and the same summary line format as the Week 4 serial program so
+ * task1.c, and the same summary line format as the baseline serial program so
  * run_bench.sh can parse it:
  *   n = N | primes found = C | time taken = T seconds
- * The timer covers the sieve only (like the Week 4 program); run_bench.sh
+ * The timer covers the sieve only (like the baseline serial program); run_bench.sh
  * records the wall-clock time of the whole process including the write.
  *
  *   gcc -O2 -o serial_sieve serial_sieve.c -lm

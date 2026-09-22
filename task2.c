@@ -1,18 +1,8 @@
 /*
- * FIT3143 Lab #2 (Week 8)
- *
- * Author
- * Name: Haruto Iriyama
- *
- * Author
- * Name: Hiew Jia Hao
- */
-
-/*
- * FIT3143 Lab #2 - Task 2: Prime search using hybrid Open MPI + OpenMP
+ * Prime search using hybrid Open MPI + OpenMP
  *
  * Finds every prime strictly less than n and writes them, sorted, to an
- * output file (or stdout when n < 100), in exactly the format of the Week 4
+ * output file (or stdout when n < 100), in exactly the format of the serial
  * serial program so the two outputs can be diffed.
  *
  * Usage:
@@ -44,7 +34,7 @@
  *      sharing on a shared array), and the T sorted thread lists are merged
  *      by the main thread into one sorted per-process list.
  *
- * Two primality kernels, as in Task 1: `trial` (the Week 4 trial division,
+ * Two primality kernels, as in task1.c: `trial` (the baseline trial division,
  * for a fair speed-up comparison) and `sieve` (segmented sieve of
  * Eratosthenes).  With the sieve the OpenMP work unit is one L1-sized
  * segment of 32768 odd numbers; each thread owns a private mark buffer.
@@ -104,7 +94,7 @@ typedef struct {
 } PrimeList;
 
 /* Trial division up to sqrt(k), skipping even divisors.
- * Identical to the Week 4 serial version (fit3143-lab1/task1.c) so timing
+ * Identical to the serial baseline (parallel-primes-pthreads-openmp/task1.c) so timing
  * differences reflect parallelisation only. */
 static bool is_prime(long long k) {
     if (k < 2) return false;

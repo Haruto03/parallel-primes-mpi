@@ -1,5 +1,5 @@
 #!/bin/bash
-# FIT3143 Lab #2 - CAAS evidence job (teaching-team request, Week 8 announcement)
+# Cluster evidence job: writes the prime files to $HOME and checks task1 == task2
 #
 # Runs task1 and task2 once each with 8 MPI ranks over TWO nodes and keeps the
 # sorted prime list in $HOME (the benchmark jobs write to node-local /tmp,
@@ -7,7 +7,7 @@
 # evidence_np8_2node.<jobid>.out, which is submitted together with the job
 # file, the prime files and screenshots.
 #
-#   cd ~/Fit3143/Lab2/caas && sbatch evidence_np8_2node.job
+#   cd ~/parallel-primes/parallel-primes-mpi/caas && sbatch evidence_np8_2node.job
 #
 #SBATCH --job-name=evidence_np8_2node
 #SBATCH --time=00:05:00
@@ -32,8 +32,8 @@ echo "=== ranks and their hosts ==="
 srun -n 8 --cpus-per-task=1 hostname | sort | uniq -c
 echo
 N=10000000
-OUT1=$HOME/Fit3143/Lab2/primes_caas_task1_n${N}.txt
-OUT2=$HOME/Fit3143/Lab2/primes_caas_task2_n${N}.txt
+OUT1=$HOME/parallel-primes/parallel-primes-mpi/primes_caas_task1_n${N}.txt
+OUT2=$HOME/parallel-primes/parallel-primes-mpi/primes_caas_task2_n${N}.txt
 echo "=== task1: 8 MPI processes (4 + 4 on two nodes), n = $N ==="
 PRIMES_VERBOSE=1 srun -n 8 --cpus-per-task=1 ./task1 $N "$OUT1" blockcyclic 1024
 echo

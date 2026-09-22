@@ -1,10 +1,10 @@
 #!/bin/bash
-# FIT3143 Lab #2 - CAAS SLURM job: task1, 32 MPI processes = 16 + 16 on two nodes (job maximum).
+# SLURM job: task1, 32 MPI processes = 16 + 16 on two nodes (job maximum).
 #
 # Layout expected on CAAS (same as the git checkout):
-#   ~/Fit3143/Lab2/caas/task1_np32_2node.job   <- submit from this directory
-#   ~/Fit3143/Lab2/task1.c, task2.c, Makefile, bench/run_bench.sh
-#   ~/Fit3143/fit3143-lab1/task1.c, task2.c, task3.c   (Week 4 programs)
+#   ~/parallel-primes/parallel-primes-mpi/caas/task1_np32_2node.job   <- submit from this directory
+#   ~/parallel-primes/parallel-primes-mpi/task1.c, task2.c, Makefile, bench/run_bench.sh
+#   ~/parallel-primes/parallel-primes-pthreads-openmp/task1.c, task2.c, task3.c   (baseline programs)
 #
 #   sbatch task1_np32_2node.job
 #   squeue -u $USER          # wait for it to finish (10 min limit, 1 job at a time)

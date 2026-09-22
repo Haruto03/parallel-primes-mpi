@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-plot.py - draw the graphs required by the FIT3143 Lab #2 specification from
+plot.py - draw the speed-up, load-balance and Amdahl graphs from
 the CSV produced by run_bench.sh.
 
     python plot.py results/<site>.csv [--site LABEL] [--out graphs/]
@@ -26,7 +26,7 @@ Required graphs (numbered as in the Task 4 section of the spec):
    15  empirical vs theoretical speed-up with increasing n (MPI at full core
        count and hybrid), from the serial fraction s(n) measured at P = 1
 
-Speed-up is always measured against the Week 4 serial program, as the spec
+Speed-up is always measured against the serial baseline program, as the
 requires.  Theoretical speed-up uses Amdahl's Law with the serial fraction
 measured on the 1-process run (broadcast + gather + merge + write = serial,
 compute = parallel), plus a Gustafson curve from the fractions measured at
@@ -44,7 +44,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
-# ---- palette (same identities as the Lab 1 graphs) -------------------------
+# ---- palette (same identities as the pthreads/OpenMP graphs) -------------------------
 C = {
     "serial":  "#2a78d6",   # blue
     "pthread": "#eb6834",   # orange
@@ -53,7 +53,7 @@ C = {
     "hybrid":  "#d62d3f",   # red
     "ideal":   "#9aa3ad",
 }
-LABEL = {"serial": "Serial (Week 4)", "pthread": "POSIX Threads", "openmp": "OpenMP",
+LABEL = {"serial": "Serial", "pthread": "POSIX Threads", "openmp": "OpenMP",
          "mpi": "Open MPI (Task 1)", "hybrid": "MPI + OpenMP (Task 2)",
          "serial_sieve": "Serial sieve", "mpi_sieve": "Open MPI sieve", "hybrid_sieve": "hybrid sieve"}
 DIST_C = {"block": "#2a78d6", "cyclic": "#eb6834", "blockcyclic": "#1baf7a", "wblock": "#8e44ad"}

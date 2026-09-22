@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # ===========================================================================
-# FIT3143 Lab #2 - benchmark harness for Task 3 / Task 4
+# Benchmark harness for the MPI / hybrid prime search
 #
-# Runs the Week 4 programs (serial, POSIX Threads, OpenMP) and the Week 8
+# Runs the baseline programs (serial, POSIX Threads, OpenMP) and the MPI
 # programs (task1 = Open MPI, task2 = hybrid MPI + OpenMP) over the sweeps
 # needed for the seven required graphs, and appends one CSV row per run.
 #
@@ -25,11 +25,11 @@
 # MPI_Init/Finalize, which `total` (MPI_Wtime inside the program) excludes;
 # the difference is the launch overhead the speed-up graphs leave out.
 # The phase columns are only filled by task1/task2 (they come straight from
-# the "CSV," line those programs print).  For the Week 4 programs `total` is
+# the "CSV," line those programs print).  For the baseline programs `total` is
 # the wall-clock time of the whole process (their own timer stops BEFORE the
 # file is written, and pthread/OpenMP allocate their n-element result array
 # before starting it); the time they report themselves goes into `comp_max`.
-# The rubric defines speed-up on the overall time including file writing,
+# Speed-up is defined on the overall time including file writing,
 # so `total` is what plot.py uses.
 #
 # Environment overrides:
@@ -49,7 +49,7 @@ set -u
 cd "$(dirname "$0")"
 BENCH_DIR=$PWD
 LAB2_DIR=$(cd .. && pwd)
-LAB1_DIR=$(cd ../../fit3143-lab1 && pwd)
+LAB1_DIR=$(cd ../../parallel-primes-pthreads-openmp && pwd)
 
 MODE=${1:-all}
 SITE=${SITE:-$(hostname -s 2>/dev/null || echo local)}
@@ -108,8 +108,8 @@ build() {
 }
 
 # ------------------------------------------------------------- runners ----
-# The Week 4 programs write ./primes_output*.txt, so run them inside OUT_DIR.
-run_week4() {                       # run_week4 <impl> <n> <threads> <run>
+# The baseline programs write ./primes_output*.txt, so run them inside OUT_DIR.
+run_baseline() {                       # run_baseline <impl> <n> <threads> <run>
     local impl=$1 n=$2 t=$3 run=$4 out total reported count sched="-" schunk=0 t0 t1
     t0=$(date +%s.%N)
     case $impl in
@@ -172,9 +172,9 @@ sweep_n() {
     local n r hp=$(( CORES >= 2 ? CORES / 2 : 1 ))
     for n in "${N_VALUES[@]}"; do
         for r in $(seq 1 "$REPEATS"); do
-            run_week4 serial  "$n" 1 "$r"
-            run_week4 pthread "$n" "$CORES" "$r"
-            run_week4 openmp  "$n" "$CORES" "$r"
+            run_baseline serial  "$n" 1 "$r"
+            run_baseline pthread "$n" "$CORES" "$r"
+            run_baseline openmp  "$n" "$CORES" "$r"
             run_mpi "$n" "$CORES" "$DIST" "$CHUNK" "$r"
             run_hybrid "$n" "$hp" 2 "$DIST" "$CHUNK" dynamic 64 "$r"
         done
@@ -187,10 +187,10 @@ sweep_p() {
     echo "=== P/T sweep at n=$N_BIG, 1..$CORES ==="
     local p t r combo
     for r in $(seq 1 "$REPEATS"); do
-        run_week4 serial "$N_BIG" 1 "$r"
+        run_baseline serial "$N_BIG" 1 "$r"
         for p in $(seq 1 "$CORES"); do
-            run_week4 pthread "$N_BIG" "$p" "$r"
-            run_week4 openmp  "$N_BIG" "$p" "$r"
+            run_baseline pthread "$N_BIG" "$p" "$r"
+            run_baseline openmp  "$N_BIG" "$p" "$r"
             run_mpi "$N_BIG" "$p" "$DIST" "$CHUNK" "$r"
         done
         while read -r p t; do
@@ -227,7 +227,7 @@ sweep_dist() {
     done
 }
 
-# Sieve kernel (Lab 1 feedback: "could be optimised with a segmented sieve").
+# Sieve kernel (from earlier review feedback: "could be optimised with a segmented sieve").
 # Compared against its own serial baseline (serial_sieve.c); with the sieve
 # the per-candidate cost is uniform, so `block` (no merge) is the natural
 # scheme.  n is much larger than N_BIG because the sieve is ~100x faster.
@@ -235,7 +235,7 @@ sweep_sieve() {
     echo "=== sieve sweep at n=$N_SIEVE (block) and trial-vs-sieve at n=$N_BIG ==="
     local p t r n
     for r in $(seq 1 "$REPEATS"); do
-        run_week4 serial_sieve "$N_SIEVE" 1 "$r"
+        run_baseline serial_sieve "$N_SIEVE" 1 "$r"
         for p in $(seq 1 "$CORES"); do
             run_mpi "$N_SIEVE" "$p" block "$CHUNK" "$r" 1 sieve
         done
@@ -245,13 +245,13 @@ sweep_sieve() {
             run_hybrid "$N_SIEVE" "$p" "$t" block "$CHUNK" dynamic 4 "$r" "" sieve
         done < <(hybrid_combos)
         # same n as the trial-division sweeps, for the direct kernel comparison
-        run_week4 serial_sieve "$N_BIG" 1 "$r"
+        run_baseline serial_sieve "$N_BIG" 1 "$r"
         run_mpi "$N_BIG" "$CORES" block "$CHUNK" "$r" "" sieve
         run_hybrid "$N_BIG" $(( CORES >= 2 ? CORES / 2 : 1 )) 2 block "$CHUNK" dynamic 4 "$r" "" sieve
         # a few n values for the sieve, full core count
         for n in 50000000 100000000 200000000 1000000000; do
             [ "$n" -le "$N_SIEVE" ] || continue
-            run_week4 serial_sieve "$n" 1 "$r"
+            run_baseline serial_sieve "$n" 1 "$r"
             run_mpi "$n" "$CORES" block "$CHUNK" "$r" "" sieve
         done
         echo "  repeat $r done"
@@ -274,9 +274,9 @@ sweep_review() {
         done
         echo "  P=1 baselines, repeat $r done"
         for n in 30000000 40000000 50000000; do
-            run_week4 serial  "$n" 1 "$r"
-            run_week4 pthread "$n" "$CORES" "$r"
-            run_week4 openmp  "$n" "$CORES" "$r"
+            run_baseline serial  "$n" 1 "$r"
+            run_baseline pthread "$n" "$CORES" "$r"
+            run_baseline openmp  "$n" "$CORES" "$r"
             run_mpi "$n" "$CORES" "$DIST" "$CHUNK" "$r"
             run_hybrid "$n" "$hp" 2 "$DIST" "$CHUNK" dynamic 64 "$r"
             run_mpi "$n" 1 "$DIST" "$CHUNK" "$r"
@@ -284,8 +284,8 @@ sweep_review() {
         done
         echo "  large n, repeat $r done"
         for p in $(( CORES * 3 / 2 )) $(( CORES * 2 )); do
-            run_week4 pthread "$N_BIG" "$p" "$r"
-            run_week4 openmp  "$N_BIG" "$p" "$r"
+            run_baseline pthread "$N_BIG" "$p" "$r"
+            run_baseline openmp  "$N_BIG" "$p" "$r"
             run_mpi "$N_BIG" "$p" "$DIST" "$CHUNK" "$r"
         done
         echo "  over-subscription, repeat $r done"
@@ -300,14 +300,14 @@ CAAS_N=(1000000 2000000 4000000 6000000 8000000 10000000 14000000 18000000 20000
 
 caas_serial() {
     local n r
-    for n in "${CAAS_N[@]}"; do for r in $(seq 1 "$REPEATS"); do run_week4 serial "$n" 1 "$r"; done; done
+    for n in "${CAAS_N[@]}"; do for r in $(seq 1 "$REPEATS"); do run_baseline serial "$n" 1 "$r"; done; done
 }
 caas_threads() {                    # pthread / OpenMP at 1..cpus-per-task threads
     local n r t
     for n in "${CAAS_N[@]}"; do
         for t in 1 2 4 8 16; do
             [ "$t" -le "${SLURM_CPUS_PER_TASK:-$CORES}" ] || continue
-            for r in $(seq 1 "$REPEATS"); do run_week4 pthread "$n" "$t" "$r"; run_week4 openmp "$n" "$t" "$r"; done
+            for r in $(seq 1 "$REPEATS"); do run_baseline pthread "$n" "$t" "$r"; run_baseline openmp "$n" "$t" "$r"; done
         done
     done
 }
@@ -319,7 +319,7 @@ caas_mpi() {                        # task1 at the allocated process count
         done
     done
     for r in $(seq 1 "$REPEATS"); do
-        run_week4 serial_sieve "$N_SIEVE" 1 "$r"
+        run_baseline serial_sieve "$N_SIEVE" 1 "$r"
         run_mpi "$N_SIEVE" "$p" block "$CHUNK" "$r" 1 sieve
     done
 }

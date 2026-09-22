@@ -60,7 +60,7 @@ make: Nothing to be done for 'all'.
       4 student-caas-n14
 
 === task1: 8 MPI processes (4 + 4 on two nodes), n = 10000000 ===
-Found 664579 prime numbers. Output written to '$HOME/Fit3143/Lab2/primes_caas_task1_n10000000.txt'.
+Found 664579 prime numbers. Output written to '$HOME/parallel-primes/parallel-primes-mpi/primes_caas_task1_n10000000.txt'.
 Execution Time (Open MPI, 8 processes, dist=blockcyclic, chunk=1024, kernel=trial): 0.328535 seconds
   broadcast : 0.000017 s
   compute   : max 0.267724 s  min 0.251075 s  avg 0.253684 s  (imbalance 6.2%, reallocs 0)
@@ -78,7 +78,7 @@ RANK,7,0.251913,83053
 CSV,mpi,10000000,8,1,blockcyclic,1024,-,0,0.328535,0.000017,0.267724,0.251075,0.253684,0.028617,0.003977,0.044849,664579
 
 === task2: 4 MPI processes x 2 OpenMP threads (2 + 2 on two nodes), n = 10000000 ===
-Found 664579 prime numbers. Output written to '$HOME/Fit3143/Lab2/primes_caas_task2_n10000000.txt'.
+Found 664579 prime numbers. Output written to '$HOME/parallel-primes/parallel-primes-mpi/primes_caas_task2_n10000000.txt'.
 Execution Time (Hybrid, 4 processes x 2 threads, dist=blockcyclic, chunk=1024, omp=dynamic/64, kernel=trial): 0.408692 seconds
   broadcast : 0.000040 s
   compute   : max 0.350183 s  min 0.261023 s  avg 0.283460 s  (rank imbalance 25.5%, worst thread imbalance 7.2%, reallocs 0)
@@ -92,8 +92,8 @@ RANK,3,0.261456,0.260239,0.241378,166118
 CSV,hybrid,10000000,4,2,blockcyclic,1024,dynamic,64,0.408692,0.000040,0.350183,0.261023,0.283460,0.008011,0.003989,0.046469,664579
 
 === output files ===
--rw-r--r-- 1 875417 1121 5227165 Sep 17 03:02 $HOME/Fit3143/Lab2/primes_caas_task1_n10000000.txt
--rw-r--r-- 1 875417 1121 5227165 Sep 17 03:02 $HOME/Fit3143/Lab2/primes_caas_task2_n10000000.txt
+-rw-r--r-- 1 875417 1121 5227165 Sep 17 03:02 $HOME/parallel-primes/parallel-primes-mpi/primes_caas_task1_n10000000.txt
+-rw-r--r-- 1 875417 1121 5227165 Sep 17 03:02 $HOME/parallel-primes/parallel-primes-mpi/primes_caas_task2_n10000000.txt
 --- task1: first 5 and last 3 lines, line count ---
 Prime numbers less than 10000000 (664579 found):
 2
@@ -103,7 +103,7 @@ Prime numbers less than 10000000 (664579 found):
 9999971
 9999973
 9999991
-664580 $HOME/Fit3143/Lab2/primes_caas_task1_n10000000.txt
+664580 $HOME/parallel-primes/parallel-primes-mpi/primes_caas_task1_n10000000.txt
 --- task1 vs task2 output identical? ---
 IDENTICAL
 --- sorted? (sort -c prints nothing when the list is in ascending order) ---
