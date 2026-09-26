@@ -1,5 +1,7 @@
 # Parallel prime search with Open MPI and OpenMP
 
+English | [日本語](README.ja.md)
+
 Distributed-memory (MPI) and hybrid (MPI + OpenMP) prime search in C, with a
 benchmark harness, correctness checks, SLURM jobs for a two-node cluster, and
 an Amdahl's-law analysis of the measured speed-ups.
